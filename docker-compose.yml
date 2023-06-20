@@ -12,6 +12,11 @@ services:
       - "8080:8080"
     environment:
       TZ: Asia/Tokyo
+    networks:
+      - front
+    depends_on:
+      - db
+
   web:
     container_name: web-server
     hostname: web-server
@@ -23,3 +28,47 @@ services:
       - "8000:80"
     environment:
       TZ: Asia/Tokyo
+    networks:
+      - front
+      - back
+
+  # db:
+  #   image: mysql:latest
+  #   restart: always
+
+  #   ports:
+  #     - "8001:8001"
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=root
+  #     - MYSQL_DATABASE=mydb
+  #     - MYSQL_USER=myuser
+  #     - MYSQL_PASSWORD=mypassword
+  #   volumes:
+  #     - ./data:/var/lib/mysql
+  #   networks:
+  #     - back
+
+  db:
+    image: mysql:latest
+    restart: always
+    container_name: db-server
+    hostname: db-server
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "33306:3306"
+    expose:
+      - "3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
+    volumes:
+      - ./db/init:/docker-entrypoint-initdb.d
+    networks:
+      - back
+
+networks:
+  front:
+
+  back:
+    driver: bridge

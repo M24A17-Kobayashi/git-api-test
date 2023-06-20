@@ -20,6 +20,7 @@ ENV TZ JST-9
 ENV TERM xterm
 
 RUN pip install --upgrade pip
+
 RUN pip install --no-cache-dir -r requirements.txt
 
 CMD ["uwsgi","--ini","/var/www/uwsgi.ini"]
