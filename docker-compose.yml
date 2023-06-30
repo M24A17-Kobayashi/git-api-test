@@ -12,6 +12,7 @@ services:
       - "8080:8080"
     environment:
       TZ: Asia/Tokyo
+      DB_HOST: db
     networks:
       - front
     depends_on:
@@ -32,28 +33,14 @@ services:
       - front
       - back
 
-  # db:
-  #   image: mysql:latest
-  #   restart: always
-
-  #   ports:
-  #     - "8001:8001"
-  #   environment:
-  #     - MYSQL_ROOT_PASSWORD=root
-  #     - MYSQL_DATABASE=mydb
-  #     - MYSQL_USER=myuser
-  #     - MYSQL_PASSWORD=mypassword
-  #   volumes:
-  #     - ./data:/var/lib/mysql
-  #   networks:
-  #     - back
-
   db:
     image: mysql:latest
     restart: always
     container_name: db-server
     hostname: db-server
-    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    command:
+      - command1 / mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci 
+      - command2 / --socket=/path/to/socket/mysqld.sock
     ports:
       - "33306:3306"
     expose:
@@ -64,6 +51,7 @@ services:
       MYSQL_PASSWORD: test
     volumes:
       - ./db/init:/docker-entrypoint-initdb.d
+      - ./db/mysqld.sock:/var/run/mysqld/mysqld.sock
     networks:
       - back
 
